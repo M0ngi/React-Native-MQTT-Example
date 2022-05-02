@@ -1,9 +1,11 @@
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { useState } from 'react';
+import { FirebaseConfig } from '../config/firebase';
 import HomeScreen from '../screens/home_screen';
 import LoginScreen from '../screens/login_screen';
 import SignupScreen from '../screens/signup_screen';
+import { authChangeHandler } from '../services/auth';
 
 const authStack = createNativeStackNavigator();
 const mainStack = createNativeStackNavigator();
@@ -29,7 +31,12 @@ function mainNavigation(){
 
 
 export default function Navigator(){
-  const [loggedIn, setLoggedIn] = useState(true);
+  const [loggedIn, setLoggedIn] = useState(false);
+  FirebaseConfig.auth.onAuthStateChanged(async (user)=>{
+    await authChangeHandler(user);
+    setLoggedIn(user !== null)
+  })
+
   return (
     <NavigationContainer>
       {loggedIn ? mainNavigation() : authNavigation()}

@@ -43,8 +43,15 @@ export class FirebaseConfig{
     /**
      * Instance getter for {@link Firestore}
      */
-    public get firestore(){
+     public get firestore(){
         return FirebaseConfig.firestore;
+    }
+
+    /**
+     * Instance getter for {@link FirebaseApp}
+     */
+     public get app(){
+        return FirebaseConfig.app;
     }
 
     /**
@@ -59,9 +66,18 @@ export class FirebaseConfig{
     /**
      * Class getter for {@link Firestore}
      */
-    public static get firestore(){
+     public static get firestore(){
         if(!this._instance) throw new FirebaseNotInitedError();
 
         return getFirestore(this._instance.firebaseApp);
+    }
+
+    /**
+     * Class getter for {@link FirebaseApp}
+     */
+     public static get app(){
+        if(!this._instance) throw new FirebaseNotInitedError();
+
+        return this._instance.firebaseApp;
     }
 }

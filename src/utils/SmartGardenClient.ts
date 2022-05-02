@@ -2,15 +2,15 @@ import * as mqtt from '@taoqf/react-native-mqtt'
 import { NotLoggedInError } from '../errors';
 import { MQTTCst } from '../const/MQTT';
 
-interface Creds {
-    username: string;
-    password: string;
-    clientid: string;
+export interface IMQTTCreds {
+  username: string;
+  password: string;
+  clientid: string;
 }
 
 export class SmartGardenClient{
   private static _instance ?: mqtt.MqttClient = undefined;
-  private static loginCreds ?: Creds = undefined;
+  private static loginCreds ?: IMQTTCreds = undefined;
 
   private constructor(){
 
@@ -25,29 +25,21 @@ export class SmartGardenClient{
     }
   }
 
-  public static login(api ?: string, clientID ?: string){
+  public static get isConnected(){
+    return this._instance !== undefined;
+  }
+
+  public static login(creds ?: IMQTTCreds) : mqtt.MqttClient{
     if(this._instance){
       if(this._instance.connected)
         return this._instance;
     }
-    if(api && clientID){
-      this.loginCreds = {
-        username: api,
-        password: api,
-        clientid: clientID,
-      };
+    if(creds){
+      this.loginCreds = creds;
     }
     else{
       if(!this.loginCreds){
         throw new NotLoggedInError();
-      }
-      // Update
-      if(api){
-        this.loginCreds.password = api;
-        this.loginCreds.username = api;
-      }
-      else if(clientID){
-        this.loginCreds.clientid = clientID;
       }
     }
     
@@ -56,7 +48,8 @@ export class SmartGardenClient{
       ...MQTTCst.connection
     };
 
-    this._instance = mqtt.connect(opt)
+    this._instance = mqtt.connect(opt);
+    return this._instance;
   }
 
   public static logout(){
