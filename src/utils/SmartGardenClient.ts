@@ -1,6 +1,8 @@
 import * as mqtt from '@taoqf/react-native-mqtt'
 import { NotLoggedInError } from '../errors';
-import { MQTTCst } from '../const/MQTT';
+import { MQTTConnection } from '../const/MQTT';
+import { Garden } from './Garden';
+import { getUserMQTTPath } from './mqtt';
 
 export interface IMQTTCreds {
   username: string;
@@ -26,7 +28,7 @@ export class SmartGardenClient{
   }
 
   public static get isConnected(){
-    return this._instance !== undefined;
+    return this._instance !== undefined && this._instance.connected;
   }
 
   public static login(creds ?: IMQTTCreds) : mqtt.MqttClient{
@@ -45,9 +47,11 @@ export class SmartGardenClient{
     
     const opt = {
       ...this.loginCreds,
-      ...MQTTCst.connection
+      ...MQTTConnection
     };
 
+    console.log('MQTT Login')
+    console.log(opt);
     this._instance = mqtt.connect(opt);
     return this._instance;
   }
@@ -57,5 +61,25 @@ export class SmartGardenClient{
 
     this._instance = undefined;
     this.loginCreds = undefined;
+  }
+
+  public static subscribe(gardens: Garden[]){
+    if(!this.loginCreds){
+      throw new Error("");
+      // TODO : Throw error
+    }
+    this.getClient().subscribe(getUserMQTTPath(this.loginCreds.clientid))
+    // this.getClient().subscribe(gardens.map((garden)=>{
+    //   return garden.mqtt_id;
+    // }))
+  }
+
+  public static unsubscribe(){
+    if(!this.loginCreds){
+      throw new Error("");
+      // TODO : Throw error
+    }
+    this.getClient().unsubscribe(getUserMQTTPath(this.loginCreds.clientid));
+    this.getClient().removeAllListeners("message");
   }
 }

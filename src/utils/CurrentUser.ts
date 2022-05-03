@@ -64,4 +64,12 @@ export class CurrentUser{
   public logout(){
     this.userInfo = undefined;
   }
+
+  public static get uid(){
+    return CurrentUser.currentUser.userInfo?.uid;
+  }
+
+  public static get gardens(){
+    return CurrentUser.currentUser.gardens;
+  }
 }

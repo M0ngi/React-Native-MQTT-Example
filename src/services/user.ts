@@ -15,12 +15,11 @@ export async function loadCurrentUserInfo() : Promise<IUserDoc> {
         throw new Error("");
     }
     
-    console.log("docData");
     const res : IUserDoc = {
         uid : FirebaseConfig.auth.currentUser.uid,
         firstname : docData.firstname,
         lastname : docData.lastname,
-        mqtt_username : docData.mmqtt_username,
+        mqtt_username : docData.mqtt_username,
         mqtt_password : docData.mqtt_password,
         gardens : await loadGardens(docData.gardens),
     }

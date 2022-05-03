@@ -48,7 +48,6 @@ export async function authChangeHandler(user:User | null) {
           FirebaseConfig.auth.signOut();
         })
     }
-    
   }
   else{
     if(CurrentUser.currentUser.userData){
