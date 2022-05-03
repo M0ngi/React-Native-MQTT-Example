@@ -1,3 +1,4 @@
+import { Garden } from "./Garden";
 import { IMQTTCreds } from "./SmartGardenClient";
 
 interface IUserData{
@@ -13,11 +14,13 @@ export interface IUserDoc{
     lastname : string;
     mqtt_username : string;
     mqtt_password : string;
+    gardens : Garden[];
 }
 
 export class CurrentUser{
   private static user ?: CurrentUser = undefined;
   private userInfo ?: IUserData = undefined;
+  private gardens : Garden[] = [];
 
   private constructor(){
   }
